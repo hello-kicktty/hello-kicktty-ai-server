@@ -11,7 +11,7 @@
 2. hello-kicktty-ai 환경 활성화
     ```bash
     # hello-kicktty-ai 환경 활성화
-    conda activate hello-kitty-ai
+    conda activate hello-kicktty-ai
     ```
 3. requirements.txt 연동
     ```bash
