@@ -10,5 +10,6 @@ def getKicks():
         return res.status_code
     
 def tmpOpenFile():
-    file = open("../tmp/kick.json", "r")
-    return file.items
+    with open ("/Users/dongsikga/development/Makertone/hello-kicktty-ai-server/src/tmp/kick.json", "r") as f:
+        data = json.load(f)
+    return data['items']

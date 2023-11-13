@@ -11,6 +11,4 @@ async def root():
 
 @app.get("/tmp")
 async def root():
-    return requsetApi.tmpOpenFile()
-
-
+    return dbscan.DBSCAN(requsetApi.tmpOpenFile())
