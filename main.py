@@ -1,19 +1,16 @@
-import requests
-import json
+import src.func.dbscan as dbscan
+import src.func.requestAPI as requsetApi
+
 from fastapi import FastAPI
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
-    return getKicks()
-    
+    return requsetApi.getKicks()
+
+@app.get("/tmp")
+async def root():
+    return requsetApi.tmpOpenFile()
 
 
-def getKicks():
-    url = "http://13.124.82.89:54401/kickboards"
-    res = requests.get(url)
-    if res.status_code == 200:
-        return res.text
-    else:
-        return res.status_code
