@@ -1,7 +1,7 @@
 from collections import deque
 from haversine import haversine
 
-EPS = 30 # m(미터) 기준
+EPS = 10 # m(미터) 기준
 MIN_CLUSTER = 3
 
 class Kickboard:
@@ -57,7 +57,7 @@ def bfs(start):
     
     for v in cluster_sequence :
         KickboardList[v]['cluster_number'] = cluster_count
-        print(v, cluster_count)
+        #print(v, cluster_count)
 
 
 
@@ -68,6 +68,22 @@ def items(k_tmp):
             'info': (i['lat'], i['lng'])
         })
     return
+
+def organizeOtherCluster(k_tmp):
+    for i in k_tmp:
+        if 'cluster_number' not in i.keys():
+            i['cluster_number'] = -1
+
+def makeReturnJson(k_tmp):
+    arr = []
+    for i in k_tmp:
+        arr.append({
+            'id': i['id'],
+            'lat': i['info'][0],
+            'lon': i['info'][1],
+            'cluster_num': i['cluster_number']
+        })
+    return arr
 
 def DBSCAN(k_tmp):
     items(k_tmp)
@@ -82,5 +98,5 @@ def DBSCAN(k_tmp):
     for i in range(len(visited)) :
         if visited[i] == True : continue
         bfs(i)
-
-    return KickboardList
+    organizeOtherCluster(KickboardList)
+    return makeReturnJson(KickboardList)
