@@ -1,17 +1,8 @@
 from collections import deque
 from haversine import haversine
 
-EPS = 10 # m(미터) 기준
+EPS = 5 # m(미터) 기준
 MIN_CLUSTER = 3
-
-class Kickboard:
-    def __int__(self, id, lon, lat, cluseter_num, danger, suburb):
-        self.id = id
-        self.longitude = lon
-        self.latitude = lat
-        self.cluseter_num = cluseter_num
-        self.danger = danger
-        self.suburb = suburb
 
 KickboardList = [] # { id : idValue, lat : latValue, lon : lonValue }
 
@@ -32,14 +23,12 @@ def bfs(start):
     cluster_sequence = []
     visited[start] = True
     isDangeSequence = False
-
-    sorted_adj = [sorted(sublist, key=lambda x: x[0]) for sublist in adj]
     
     while queue:
         x = queue.popleft()
         cluster_sequence.append(x)
 
-        for p in sorted_adj[start] :
+        for p in adj[start] :
             if p[0] > EPS : break
             if visited[p[1]] : continue
             visited[p[1]] = True
@@ -59,8 +48,16 @@ def bfs(start):
         KickboardList[v]['cluster_number'] = cluster_count
         #print(v, cluster_count)
 
-
-
+def initial_global():
+    global KickboardList
+    global visited
+    global adj
+    global cluster_count
+    KickboardList = []
+    visited = [False]*1000
+    adj = [[] for _ in range(1000)]  # 1000개의 서브리스트를 갖는 빈 리스트 초기화
+    cluster_count = 0
+    
 def items(k_tmp):
     for i in k_tmp:
         KickboardList.append({
@@ -86,6 +83,7 @@ def makeReturnJson(k_tmp):
     return arr
 
 def DBSCAN(k_tmp):
+    initial_global()
     items(k_tmp)
     for i in KickboardList:
         kick1_id, kick1_info = i['id'], i['info']
@@ -93,8 +91,12 @@ def DBSCAN(k_tmp):
             kick2_id, kick2_info = j['id'], j['info']
             if kick1_id <= kick2_id : continue
             dist = get_distance(kick1_info, kick2_info)
+            #if(kick1_id == 87 or kick2_id == 87):
+            #   print(kickdist)
             adj[kick1_id].append((dist, kick2_id))
             adj[kick2_id].append((dist, kick1_id))
+    for i in range(len(adj)):
+        adj[i] = list(sorted(adj[i], key=lambda x: x[0]))
     for i in range(len(visited)) :
         if visited[i] == True : continue
         bfs(i)
