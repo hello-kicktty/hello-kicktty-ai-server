@@ -28,7 +28,7 @@ def bfs(start):
         x = queue.popleft()
         cluster_sequence.append(x)
 
-        for p in adj[start] :
+        for p in adj[x] :
             if p[0] > EPS : break
             if visited[p[1]] : continue
             visited[p[1]] = True
@@ -43,9 +43,9 @@ def bfs(start):
 
     global cluster_count
     cluster_count += 1
-    
-    for v in cluster_sequence :
-        KickboardList[v]['cluster_number'] = cluster_count
+    print(cluster_sequence)
+    for v in cluster_sequence:
+        KickboardList[v-1]['cluster_number'] = cluster_count
         #print(v, cluster_count)
 
 def initial_global():
@@ -91,14 +91,12 @@ def DBSCAN(k_tmp):
             kick2_id, kick2_info = j['id'], j['info']
             if kick1_id <= kick2_id : continue
             dist = get_distance(kick1_info, kick2_info)
-            #if(kick1_id == 87 or kick2_id == 87):
-            #   print(kickdist)
             adj[kick1_id].append((dist, kick2_id))
             adj[kick2_id].append((dist, kick1_id))
     for i in range(len(adj)):
         adj[i] = list(sorted(adj[i], key=lambda x: x[0]))
-    for i in range(len(visited)) :
-        if visited[i] == True : continue
+    for i in range(len(visited)):
+        if visited[i] == True: continue
         bfs(i)
     organizeOtherCluster(KickboardList)
     return makeReturnJson(KickboardList)
