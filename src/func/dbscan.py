@@ -12,7 +12,7 @@ def get_distance(kick_info1, kick_info2): # 위도 경도 기반 거리를 구�
     return tmp 
 
 visited = [False]*1000
-adj = [[] for _ in range(1000)]  # 1000개의 서브리스트를 갖는 빈 리스트 초기화
+adj = []  # 1000개의 서브리스트를 갖는 빈 리스트 초기화
 
 cluster_count = 0
 
@@ -28,7 +28,7 @@ def bfs(start):
         x = queue.popleft()
         cluster_sequence.append(x)
 
-        for p in adj[start] :
+        for p in adj[x] :
             if p[0] > EPS : break
             if visited[p[1]] : continue
             visited[p[1]] = True
