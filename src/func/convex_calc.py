@@ -1,27 +1,52 @@
-import pandas as pd
+import math
 
-def ccw(x1, y1, x2, y2, x3, y3):
-    c = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1)
-    return c < 0
 
-def convex_hull(positions):
-    convex = []  # set으로 변경
-    non_convex = []
-    for p3 in positions:
-        while len(convex) >= 3:
-            p1, p2 = convex[-2], convex[-1]
-            if ccw(p1['lat'], p1['lon'], p2['lat'], p2['lon'], p3['lat'], p3['lon']):
-                break
-            non_convex.append(convex.pop())
-        convex.append(p3)  # set에 추가하는 방식으로 변경
 
-    return [convex, non_convex]  # set을 다시 list로 변환하여 반환
+def ccw(p, q, r):
+    val = (q['lon'] - p['lon']) * (r['lat'] - q['lat']) - (q['lat'] - p['lat']) * (r['lon'] - q['lon'])
+    if val == 0:
+        return 0
+    return 1 if val > 0 else 2
+
+def polar_angle(p, q):
+    x_diff = q[0] - p[0]
+    y_diff = q[1] - p[1]
+    return math.atan2(y_diff, x_diff)
+
+def graham_scan(points):
+    n = len(points)
+    if n < 3:
+        return []
+    # 점들 중 가장 아래에 있는 점을 찾음
+    pivot = min(points, key=lambda p: (p['lon'], p['lat']))
+    # 극각에 따라 점들을 정렬
+    sorted_points = sorted(points, key=lambda p: polar_angle((pivot['lat'], pivot['lon']), (p['lat'], p['lon'])))
+    # Graham's Scan 알고리즘 적용
+    convex = [sorted_points[0], sorted_points[1]]
+    for point in sorted_points[2:]:
+        while len(convex) > 2 and ccw(convex[-2], convex[-1], point) != 2:
+            convex.pop()
+        point['border'] = True
+        convex.append(point)
+    print(convex)
+
+    return convex
+
+def organizeOtherKick(data):
+    for i in range(len(data)):
+        if 'border' in data[i].keys():
+            pass
+        else:
+            data[i]['border'] = False
+
+    return sorted(data, key=lambda x:x['cluster_num'])
 
 def convex_call(k_tmp):
     returnArray = []
     kickboard_dic_arr_dic = {}
     for i in k_tmp:
         if i['cluster_num'] == -1:
+            returnArray.append(i)
             continue
         else:
             if i['cluster_num'] in kickboard_dic_arr_dic:
@@ -29,29 +54,8 @@ def convex_call(k_tmp):
             else:
                 kickboard_dic_arr_dic[i['cluster_num']] = [i]
     for i in kickboard_dic_arr_dic.keys():
-        positions = kickboard_dic_arr_dic[i]
-        #print(positions)
-        positions = sorted(positions, key=lambda x: (x['lat'], x['lon']))
-        tmp1 = convex_hull(positions)
-        #tmp2 = convex_hull(positions[::-1])
-        sh = tmp1[0]# + tmp2[0]
-        #sh = list({v['id']: v for v in shx}.values())
-        none_sh = tmp1[1]# + tmp2[1]
-        #none_sh = list({v['id']: v for v in none_shx}.values())
-        #for i in sh:
-            #if i in none_sh:
-                #none_sh.remove(i)
-    #positions = [(0,3), (1,1), (2,2), (4,4), (0,0), (1,2), (3,1), (3,3)]
-    #positions = sorted(positions, key=lambda pos: (pos[0], pos[1]))
-    #sh = convex_hull(positions) + convex_hull(positions[::-1])
-        sorted_sh = sorted(sh, key=lambda x: (x['lat'], x['lon']))
-        for i in range(len(sorted_sh)):
-            tmpData = sorted_sh[i]
-            tmpData['border'] = True
-            returnArray.append(tmpData)
-        for i in range(len(none_sh)):
-            tmpData = none_sh[i]
-            tmpData['border'] = False
-            returnArray.append(tmpData)
+        positions = kickboard_dic_arr_dic[i] # dictionary 각 키마다 배열이 존재
+        result = graham_scan(positions)
+        returnArray += result
 
-    return returnArray
+    return organizeOtherKick(returnArray)

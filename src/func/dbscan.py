@@ -6,6 +6,8 @@ MIN_CLUSTER = 3
 
 KickboardList = [] # { id : idValue, lat : latValue, lon : lonValue }
 
+
+
 def get_distance(kick_info1, kick_info2): # 위도 경도 기반 거리를 구하는 함수
     tmp = math.sqrt(math.pow(kick_info1['lat'] - kick_info2['lat'], 2) + math.pow(kick_info1['lon'] - kick_info2['lon'], 2))
     dist = tmp * 0.00001
@@ -45,9 +47,9 @@ def bfs(start):
 
     global cluster_count
     cluster_count += 1
-    
-    for v in cluster_sequence :
-        KickboardList[v]['cluster_number'] = cluster_count
+    print(cluster_sequence)
+    for v in cluster_sequence:
+        KickboardList[v-1]['cluster_number'] = cluster_count
         #print(v, cluster_count)
 
 def initial_global():
@@ -93,14 +95,12 @@ def DBSCAN(k_tmp):
             kick2_id, kick2_info = j['id'], j['info']
             if kick1_id <= kick2_id : continue
             dist = get_distance(kick1_info, kick2_info)
-            #if(kick1_id == 87 or kick2_id == 87):
-            #   print(kickdist)
             adj[kick1_id].append((dist, kick2_id))
             adj[kick2_id].append((dist, kick1_id))
     for i in range(len(adj)):
         adj[i] = list(sorted(adj[i], key=lambda x: x[0]))
-    for i in range(len(visited)) :
-        if visited[i] == True : continue
+    for i in range(len(visited)):
+        if visited[i] == True: continue
         bfs(i)
     organizeOtherCluster(KickboardList)
     return makeReturnJson(KickboardList)
