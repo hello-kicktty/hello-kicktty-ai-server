@@ -6,6 +6,8 @@ MIN_CLUSTER = 3
 
 KickboardList = [] # { id : idValue, lat : latValue, lon : lonValue }
 
+
+
 def get_distance(kick_info1, kick_info2): # 위도 경도 기반 거리를 구하는 함수
     tmp = haversine(kick_info1, kick_info2, unit="m")
     #print(tmp)
