@@ -1,5 +1,5 @@
 from collections import deque
-from haversine import haversine
+import math
 
 EPS = 5 # m(미터) 기준
 MIN_CLUSTER = 3
@@ -7,9 +7,11 @@ MIN_CLUSTER = 3
 KickboardList = [] # { id : idValue, lat : latValue, lon : lonValue }
 
 def get_distance(kick_info1, kick_info2): # 위도 경도 기반 거리를 구하는 함수
-    tmp = haversine(kick_info1, kick_info2, unit="m")
+    tmp = math.sqrt(math.pow(kick_info1['lat'] - kick_info2['lat'], 2) + math.pow(kick_info1['lon'] - kick_info2['lon'], 2))
+    dist = tmp * 0.00001
+    # 1m = 0.00001
     #print(tmp)
-    return tmp 
+    return dist
 
 visited = [False]*1000
 adj = []  # 1000개의 서브리스트를 갖는 빈 리스트 초기화
