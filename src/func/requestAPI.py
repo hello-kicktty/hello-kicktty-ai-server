@@ -3,12 +3,16 @@ import json
 from src.func.Kickboard import Kickboard
 
 def getKicks():
+    kickboard_info_list = []
     url = "http://13.124.82.89:54401/kickboards"
     res = requests.get(url)
     if res.status_code == 200:
-        return res.text
+        data = json.loads(res.text)
+        for kicks in data['kickboards']:
+            kickboard_info_list.append(Kickboard(kicks['id'], kicks['lat'], kicks['lng'], kicks['danger']))
+        return kickboard_info_list
     else:
-        return res.status_code
+        return []
     
 def tmpOpenFile():
     with open ("/Users/dongsikga/development/Makertone/hello-kicktty-ai-server/src/tmp/kick.json", "r") as f:
