@@ -8,7 +8,7 @@ import src.func.requestAPI as requestApi
 kickboard_router = APIRouter()
 
 
-@kickboard_router.get("/cluster")
+@kickboard_router.post("/cluster")
 async def cluster_kickboard(lat=float, lng=float):
     # dbscan_result : List of Kickboard class
     # dbscan_result = dbscan.DBSCAN(requsetApi.tmpOpenFile())  # Kickboard class List - using tmp local file
