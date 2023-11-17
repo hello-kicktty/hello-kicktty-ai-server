@@ -4,7 +4,7 @@ from src.func.Kickboard import Kickboard
 
 def getKicks():
     kickboard_info_list = []
-    url = "http://13.124.82.89:54401/kickboards"
+    url = "http://3.35.50.22:59295/kickboards"
     res = requests.get(url)
     if res.status_code == 200:
         data = json.loads(res.text)
