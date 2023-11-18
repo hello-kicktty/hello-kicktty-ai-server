@@ -30,11 +30,29 @@ def graham_scan(kickboard_list_in_cluster):
             convex.pop()
         convex.append(kick)
 
-    for kick in convex:
-        kick.set_is_border(True)
+    #for kick in convex:
+    #    kick.set_is_border(True)
     #print(convex)
 
     return convex
+
+#
+def sort_points_clockwise(center, points):
+    # center를 기준으로 각도에 따라 정렬하는 함수
+    def angle_key(point):
+        x, y = point.lat - center.lat, point.lng - center.lng
+        return math.atan2(y, x)
+
+    # center를 기준으로 각도에 따라 정렬
+    sorted_points = sorted(points, key=angle_key)
+    for kickIdx in range(len(sorted_points)):
+        sorted_points[kickIdx].set_is_border(kickIdx)
+
+    #print([i.id for i in sorted_points])
+    #print([i.border for i in sorted_points])
+    return sorted_points
+
+
 
 def convex_call(kickboard_info_list):
     kickboard_cluster_id_dic = {}
@@ -45,6 +63,11 @@ def convex_call(kickboard_info_list):
             else:
                 kickboard_cluster_id_dic[kick.cluster_id] = [kick]
     for cluster_id in kickboard_cluster_id_dic.keys():
+        #print("id: " + str(cluster_id))
         cluster_list = kickboard_cluster_id_dic[cluster_id] # dictionary 각 cluster_id마다 배열이 존재
         result = graham_scan(cluster_list) # cluster_list는 각 cluster_id 마다의 list가 for를 통해 입력
+        # 스택의 첫 번째 원소를 기준으로 시계 방향으로 정렬
+        result_sort = sorted(result, key=lambda kick: kick.lng)
+        center_point = result_sort[0]
+        sorted_clockwise = sort_points_clockwise(center_point, result_sort)
     return sorted(kickboard_info_list, key=lambda kick: kick.cluster_id)

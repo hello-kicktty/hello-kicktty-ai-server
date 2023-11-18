@@ -6,14 +6,14 @@ class Kickboard:
         self.lng = lng
         self.cluster_id = -1
         self.danger = danger
-        self.border = False
+        self.border = -1
 
 
     def set_cluster_id(self, num):
         self.cluster_id = num
 
-    def set_is_border(self, boolean):
-        self.border = boolean
+    def set_is_border(self, border):
+        self.border = border
 
     def get_id(self):
         return self.id
