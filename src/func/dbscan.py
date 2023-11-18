@@ -2,8 +2,8 @@ from collections import deque
 import math
 from src.func.Kickboard import Kickboard
 
-EPS = 5 # m(미터) 기준
-MIN_CLUSTER = 3
+EPS = 7 # m(미터) 기준
+MIN_CLUSTER = 7
 
 def get_distance(kick_info1, kick_info2): # 위도 경도 기반 거리를 구하는 함수
     tmp = math.sqrt(math.pow(kick_info1['lat'] - kick_info2['lat'], 2) + math.pow(kick_info1['lng'] - kick_info2['lng'], 2))

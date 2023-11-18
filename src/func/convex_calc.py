@@ -2,7 +2,6 @@ import math
 from src.func.Kickboard import Kickboard
 
 
-
 def ccw(kick1, kick2, kick3):
     val = (kick2.lng - kick1.lng) * (kick3.lat - kick2.lat) - (kick2.lat - kick1.lat) * (kick3.lng - kick2.lng)
     if val == 0:
@@ -20,8 +19,11 @@ def graham_scan(kickboard_list_in_cluster):
         return []
     # 점들 중 가장 아래에 있는 점을 찾음
     pivot_kick = min(kickboard_list_in_cluster, key=lambda kick: (kick.lat, kick.lng))
+
+
     # 극각에 따라 점들을 정렬
     kickboard_List_sorted_polar_angle = sorted(kickboard_list_in_cluster, key=lambda kick: (polar_angle(pivot_kick, kick), kick.lat, kick.lng))
+
     # Graham's Scan 알고리즘 적용
     convex = [pivot_kick, kickboard_List_sorted_polar_angle[0], kickboard_List_sorted_polar_angle[1]]
 
@@ -30,9 +32,10 @@ def graham_scan(kickboard_list_in_cluster):
             convex.pop()
         convex.append(kick)
 
-    for kick in convex:
-        kick.set_is_border(True)
-    #print(convex)
+    for kickIdx in range(len(convex)):
+        convex[kickIdx].set_is_border(kickIdx)
+        #print(convex[kickIdx].json_return_convex())
+
 
     return convex
 
