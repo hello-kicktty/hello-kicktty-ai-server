@@ -18,8 +18,9 @@ async def cluster_kickboard(lat=float, lng=float):
 
     # convex_result : List of Kickboard class
     convex_result = convex.convex_call(dbscan_result)
+    # print([(i.id, i.cluster_id, i.border) for i in convex_result])
 
-    json_data = json.dumps([{"id": kick.id, "lat": kick.lat, "lng": kick.lng, "cluster_id": kick.cluster_id, "danger": kick.danger, "border": kick.border} for kick in convex_result])
+    json_data = json.dumps([{"id": kick.id,"lat": kick.lat,"lng": kick.lng,"cluster_id": kick.cluster_id,"danger": kick.danger,"border": kick.border} for kick in convex_result])
 
     url = "http://3.35.50.22:59295/update" 
     headers = {"Content-Type": "application/json"}

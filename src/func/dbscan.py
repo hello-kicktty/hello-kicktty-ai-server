@@ -16,7 +16,7 @@ def get_distance(kick_info1, kick_info2): # 위도 경도 기반 거리를 구�
 visited = [False]*1000
 adj = []  # 1000개의 서브리스트를 갖는 빈 리스트 초기화
 
-cluster_count = -1
+cluster_count = 0
 
 # [[(1,2),(2,3),(3,4)], [(2,3),(3,4),(4,5)]]
 
@@ -45,8 +45,8 @@ def bfs(kickboard_info_list, start): # start는 정수
 
     global cluster_count
     cluster_count += 1
-    print(cluster_count)
-    print(cluster_sequence)
+    #print(cluster_count)
+    #print(cluster_sequence)
     for v in cluster_sequence:
         kickboard_info_list[v-1].set_cluster_id(cluster_count)
         #print(v, cluster_count)
